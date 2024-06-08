@@ -14,16 +14,7 @@ const db = new Client({
   port: parseInt(process.env.DB_PORT!),
 });
 
-db.connect().then(() => {
-  db.query(`
-        CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY,
-            telegram_id TEXT UNIQUE,
-            first_name TEXT
-        )
-    `);
-});
-
+db.connect()
 const admins = ['533398165'];
 
 bot.start(async (ctx) => {
