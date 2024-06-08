@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "migrate-up-ci": "dbmate -d backend/db/migrations -e DATABASE_URL u"
+    "migrate-up-ci": "dbmate -d backend/db/migrations -e DATABASE_URL up"
   },
   "author": "",
   "license": "ISC",
