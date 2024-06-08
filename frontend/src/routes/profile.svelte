@@ -60,7 +60,7 @@
 {#if userProfile}
   <div>
     <h2>Profile</h2>
-    <p>Telegram ID: {userProfile.telegram_id}</p>
-    <p>Created At: {userProfile.created_at}</p>
+    <p>Telegram ID: {userProfile.telegramID}</p>
+    <p>Created At: {userProfile.createdAt}</p>
   </div>
 {/if}

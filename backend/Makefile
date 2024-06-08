@@ -3,3 +3,6 @@ start-dev-env:
 
 migrate-up:
 	dbmate -d ./db/migrations -e DATABASE_URL up
+
+generate-queries:
+	sqlc generate

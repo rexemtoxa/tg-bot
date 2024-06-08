@@ -1,25 +1,34 @@
 import { Telegraf } from 'telegraf';
-import { Client } from 'pg';
+import postgres from 'postgres'
 import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
+import { createUser, getUserByTelegramID, saveUserPassword, updateUserToken } from './repository/users/queries_sql';
 
 dotenv.config();
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
-const db = new Client({
-  user: process.env.DB_USER,
+const client = postgres({
   host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
-  password: process.env.DB_PASSWORD,
   port: parseInt(process.env.DB_PORT!),
+  database: process.env.DB_DATABASE,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  ssl: false
 });
 
-db.connect()
 const admins = ['533398165'];
 
 bot.start(async (ctx) => {
   const { id, first_name } = ctx.from;
-  await db.query('INSERT INTO users (telegram_id, first_name) VALUES ($1, $2) ON CONFLICT (telegram_id) DO NOTHING', [id, first_name]);
+  try {
+    await createUser(client, { telegramId: String(id), firstName: first_name });
+  } catch (error) {
+    console.log(error);
+    await ctx.reply('Database error');
+    return;
+  }
+
+
   await ctx.reply(`Hello, ${first_name}!`, {
     reply_markup: {
       inline_keyboard: [[{ text: 'Open Web App', web_app: { url: 'https://google.com' } }]]
@@ -36,8 +45,8 @@ bot.command('adminhello', async (ctx) => {
     return ctx.reply('You are not authorized to use this command.');
   }
 
-  const user = await db.query('SELECT * FROM users WHERE telegram_id = $1', [telegram_id]);
-  if (user.rows.length === 0) {
+  const user = await getUserByTelegramID(client, { telegramId: telegram_id });
+  if (user === null) {
     return ctx.reply('User not found.');
   }
 
@@ -62,7 +71,8 @@ app.post('/api/signup', async (req, res) => {
   console.log('Signup request received');
   console.log(req.body);
   try {
-    await db.query('INSERT INTO users (telegram_id, password, token, created_at) VALUES ($1, $2, $3, NOW())', [telegramID, password, token]);
+    await saveUserPassword(client, { telegramId: telegramID, password: password });
+    await updateUserToken(client, { telegramId: telegramID, token: token });
     res.status(200).json({ success: true });
   } catch (error) {
     console.log(error);
@@ -73,8 +83,11 @@ app.post('/api/signup', async (req, res) => {
 app.post('/api/login', async (req, res) => {
   const { telegramID, password } = req.body;
   try {
-    const result = await db.query('SELECT * FROM users WHERE telegram_id = $1 AND password = $2', [telegramID, password]);
-    if (result.rows.length === 1) {
+    const user = await getUserByTelegramID(client, { telegramId: telegramID });
+    if (user === null) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    if (user.password === password) {
       res.status(200).json({ success: true });
     } else {
       res.status(401).json({ error: 'Invalid credentials' });
@@ -87,9 +100,16 @@ app.post('/api/login', async (req, res) => {
 app.post('/api/verify-token', async (req, res) => {
   const { telegramID, token } = req.body;
   try {
-    const result = await db.query('SELECT * FROM users WHERE telegram_id = $1 AND token = $2', [telegramID, token]);
-    if (result.rows.length === 1) {
-      res.status(200).json(result.rows[0]);
+
+    const user = await getUserByTelegramID(client, { telegramId: telegramID });
+    if (user === null) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+    if (user.token === token) {
+      res.status(200).json({
+        telegramID: user.telegramId,
+        createdAt: user.createdAt
+      });
     } else {
       res.status(401).json({ error: 'Invalid token' });
     }
