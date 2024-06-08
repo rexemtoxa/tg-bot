@@ -1,15 +1,15 @@
-import { Telegraf } from 'telegraf';
 import postgres from 'postgres'
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
-import { createUser, getUserByTelegramID, saveUserPassword, updateUserToken } from './repository/users/users-queries_sql';
+import { getUserByTelegramID, saveUserPassword, updateUserToken } from './repository/users/users-queries_sql';
 import { createSession, getSessionByToken, deleteSessionByTelegramID } from './repository/sessions/sessions-queries_sql';
 import crypto from 'crypto';
 import cookieParser from 'cookie-parser';
+import { getBotDeps } from './repository/bot-deps';
+import { launchBot } from './bot';
 
 dotenv.config();
-const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
 const client = postgres({
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT!),
@@ -44,46 +44,8 @@ declare global {
 
 const admins = ['533398165'];
 
-bot.start(async (ctx) => {
-  const { id, first_name } = ctx.from;
-  try {
-    await createUser(client, { telegramId: String(id), firstName: first_name });
-  } catch (error) {
-    console.log(error);
-    await ctx.reply('Database error');
-    return;
-  }
-
-
-  await ctx.reply(`Hello, ${first_name}!`, {
-    reply_markup: {
-      inline_keyboard: [[{ text: 'Open Web App', web_app: { url: BASE_URL as string } }]]
-    }
-  });
-});
-
-bot.command('adminhello', async (ctx) => {
-  console.log('Admin command received')
-  const [command, telegram_id, ...messageParts] = ctx.message.text.split(' ');
-  const message = messageParts.join(' ');
-
-  if (!admins.includes(String(ctx.from.id))) {
-    return ctx.reply('You are not authorized to use this command.');
-  }
-
-  const user = await getUserByTelegramID(client, { telegramId: telegram_id });
-  if (user === null) {
-    return ctx.reply('User not found.');
-  }
-
-  await bot.telegram.sendMessage(telegram_id, message);
-  ctx.reply('Message sent.');
-});
-
-bot.launch().then(() => {
-  console.log('Bot is running...');
-});
-
+const botDeps = getBotDeps(client);
+launchBot(botDeps, admins, BASE_URL!);
 
 
 const app = express();

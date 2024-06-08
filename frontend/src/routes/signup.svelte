@@ -1,10 +1,17 @@
 <script lang="ts">
   import { v4 as uuidv4 } from "uuid";
+  import { extractTelegramIdFromQuery } from "../utils";
+  import { onMount } from "svelte";
 
   let telegramID = "";
   let password = "";
   let token = "";
   let showTokenBox = false;
+
+  onMount(() => {
+    const params = extractTelegramIdFromQuery();
+    telegramID = params.telegramId;
+  });
 
   const signUp = async () => {
     token = uuidv4();

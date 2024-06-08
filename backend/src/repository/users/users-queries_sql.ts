@@ -2,7 +2,7 @@ import { Sql } from "postgres";
 
 export const createUserQuery = `-- name: CreateUser :one
 INSERT INTO users (telegram_id, first_name)
-VALUES ($1, $2)
+VALUES ($1, $2) ON CONFLICT (telegram_id) DO UPDATE SET first_name = EXCLUDED.first_name
 RETURNING id, telegram_id, first_name, password, token, created_at`;
 
 export interface CreateUserArgs {
