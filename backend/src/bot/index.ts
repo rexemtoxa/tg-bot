@@ -40,7 +40,19 @@ export const launchBot = (dbDeps: DataBaseDeps, bot: BotDeps, admins: string[], 
     });
   });
 
+  const isCommandMessageValid = (ctx: Context & { message: Update.New & Update.NonChannel & Message.TextMessage }): boolean => {
+    if (!ctx.message?.text) {
+      return false;
+    }
+    return ctx.message.text.split(' ').length > 1;
+  }
+
+
   bot.command('adminhello', async (ctx) => {
+    if (!isCommandMessageValid(ctx)) {
+      ctx.reply('Invalid command body, please provide a message like:\n```\n/adminhello 12345 Hello!\n```', { parse_mode: 'Markdown' });
+      return;
+    }
     const [_, telegram_id, ...messageParts] = ctx.message?.text.split(' ');
     const message = messageParts.join(' ');
 
