@@ -1,0 +1,8 @@
+FROM node:21-alpine
+
+COPY backend/db /app/db
+RUN apk add --no-cache curl
+RUN curl -fsSL https://github.com/amacneil/dbmate/releases/latest/download/dbmate-linux-amd64 -o /usr/local/bin/dbmate
+RUN chmod +x /usr/local/bin/dbmate
+
+CMD ["dbmate", "-d", "/app/db/migrations", "-e", "DATABASE_URL", "up"]
