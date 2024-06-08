@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
+    "bot-start": "node dist/bot/index.js",
     "migrate-up-ci": "pwd && ls -lah && dbmate -d /app/db/migrations -e DATABASE_URL up"
   },
   "author": "",

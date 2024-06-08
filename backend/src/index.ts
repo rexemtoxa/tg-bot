@@ -6,9 +6,7 @@ import { getUserByTelegramID, saveUserPassword, updateUserToken } from './reposi
 import { createSession, getSessionByToken, deleteSessionByTelegramID } from './repository/sessions/sessions-queries_sql';
 import crypto from 'crypto';
 import cookieParser from 'cookie-parser';
-import { getBotDeps } from './repository/bot-deps';
-import { launchBot } from './bot';
-import { Telegraf } from 'telegraf';
+
 
 dotenv.config();
 const client = postgres({
@@ -20,7 +18,6 @@ const client = postgres({
   ssl: false
 });
 
-const BASE_URL = process.env.BASE_URL;
 const SALT = process.env.SALT || 'somesalt';
 const PEPPER = process.env.PEPPER || 'somepepper';
 
@@ -42,12 +39,6 @@ declare global {
     }
   }
 }
-
-const admins = ['533398165'];
-
-const botDeps = getBotDeps(client);
-const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
-launchBot(botDeps, bot, admins, BASE_URL!);
 
 
 const app = express();
@@ -106,7 +97,6 @@ app.post('/api/login', async (req, res) => {
     }
     if (user.password === password) {
       const { token, hash } = generateToken();
-      // await updateUserToken(client, { telegramId: telegramID, token: token });
       const expiresAt = new Date();
       expiresAt.setHours(expiresAt.getHours() + 24);
       res.cookie('session', token, { httpOnly: true, secure: true, expires: expiresAt });

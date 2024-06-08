@@ -1,6 +1,10 @@
-import { Context, Telegram } from 'telegraf';
+import { Context, Telegram, Telegraf } from 'telegraf';
 import { CreateUserRow, GetUserByTelegramIDRow } from '../repository/users/users-queries_sql';
 import { Message, Update } from 'telegraf/typings/core/types/typegram';
+import { getBotDeps } from '../repository/bot-deps';
+import postgres from 'postgres';
+import dotenv from 'dotenv';
+
 
 export interface DataBaseDeps {
   createUser(args: { telegramId: string, firstName: string }): Promise<CreateUserRow | null>;
@@ -77,3 +81,18 @@ export const launchBot = (dbDeps: DataBaseDeps, bot: BotDeps, admins: string[], 
 
 }
 
+const client = postgres({
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT!),
+  database: process.env.DB_DATABASE,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  ssl: false
+});
+const admins = ['533398165'];
+const botDeps = getBotDeps(client);
+const BASE_URL = process.env.BASE_URL;
+
+const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
+launchBot(botDeps, bot, admins, BASE_URL!);
+dotenv.config();
