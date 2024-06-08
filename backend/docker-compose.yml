@@ -16,3 +16,12 @@ services:
       start_period: 5s
     ports:
       - "5432:5432"
+
+  myapp:
+    image: myapp:latest
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=db

@@ -53,7 +53,7 @@ launchBot(botDeps, bot, admins, BASE_URL!);
 const app = express();
 const port = 3000;
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../../frontend/public')));
+app.use(express.static(process.env.PATH_TO_STATIC || path.join(__dirname, '../../frontend/public')));
 app.use(cookieParser())
 const auth = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.session;
@@ -150,7 +150,7 @@ app.post('/api/verify-token', auth, async (req, res) => {
 
 app.get('*', (req, res) => {
   console.log('GET request received for the static');
-  res.sendFile(path.join(__dirname, '../../frontend/public/index.html'));
+  res.sendFile(process.env.PATH_TO_STATIC || path.join(__dirname, '../../frontend/public') + '/index.html');
 });
 
 

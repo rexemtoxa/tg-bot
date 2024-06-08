@@ -61,7 +61,7 @@ ALTER SEQUENCE public.sessions_id_seq OWNED BY public.sessions.id;
 
 CREATE TABLE public.users (
     id integer NOT NULL,
-    telegram_id text,
+    telegram_id character varying(255),
     first_name text,
     created_at timestamp without time zone DEFAULT now(),
     password text,
@@ -117,6 +117,22 @@ ALTER TABLE ONLY public.schema_migrations
 
 ALTER TABLE ONLY public.sessions
     ADD CONSTRAINT sessions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions sessions_session_token_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT sessions_session_token_key UNIQUE (session_token);
+
+
+--
+-- Name: sessions sessions_telegram_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sessions
+    ADD CONSTRAINT sessions_telegram_id_key UNIQUE (telegram_id);
 
 
 --
