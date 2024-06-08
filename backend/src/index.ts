@@ -8,6 +8,7 @@ import crypto from 'crypto';
 import cookieParser from 'cookie-parser';
 import { getBotDeps } from './repository/bot-deps';
 import { launchBot } from './bot';
+import { Telegraf } from 'telegraf';
 
 dotenv.config();
 const client = postgres({
@@ -45,7 +46,8 @@ declare global {
 const admins = ['533398165'];
 
 const botDeps = getBotDeps(client);
-launchBot(botDeps, admins, BASE_URL!);
+const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
+launchBot(botDeps, bot, admins, BASE_URL!);
 
 
 const app = express();
