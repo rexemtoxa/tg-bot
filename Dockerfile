@@ -20,6 +20,7 @@ WORKDIR /app
 COPY --from=frontend-build /app/public /app/public
 COPY --from=backend-build /app/dist /app/dist
 COPY backend/package*.json ./
+COPY backend/db /app/db
 RUN npm ci --only=production
 ENV PATH_TO_STATIC=/app/public
 EXPOSE 3000
