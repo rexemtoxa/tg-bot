@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { navigate } from "svelte-routing";
   let telegramID = "";
   let password = "";
   let token = "";
@@ -25,6 +26,10 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ telegramID, token }),
     });
+
+    if (response.status === 401) {
+      navigate("/");
+    }
 
     if (response.ok) {
       userProfile = await response.json();

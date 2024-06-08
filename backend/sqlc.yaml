@@ -6,10 +6,22 @@ plugins:
     sha256: 287df8f6cc06377d67ad5ba02c9e0f00c585509881434d15ea8bd9fc751a9368
 sql:
 - schema: "schema.sql"
-  queries: "db/queries/queries.sql"
+  queries:
+    - "db/queries/users-queries.sql"
   engine: postgresql
   codegen:
   - out: src/repository/users
+    plugin: ts
+    options:
+      runtime: node
+      driver: postgres
+      package: "types"
+- schema: "schema.sql"
+  queries:
+    - "db/queries/sessions-queries.sql"
+  engine: postgresql
+  codegen:
+  - out: src/repository/sessions
     plugin: ts
     options:
       runtime: node

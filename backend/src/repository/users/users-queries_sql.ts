@@ -1,7 +1,6 @@
 import { Sql } from "postgres";
 
 export const createUserQuery = `-- name: CreateUser :one
-
 INSERT INTO users (telegram_id, first_name)
 VALUES ($1, $2)
 RETURNING id, telegram_id, first_name, password, token, created_at`;

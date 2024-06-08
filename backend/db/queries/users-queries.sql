@@ -1,5 +1,3 @@
--- queries/users.sql
-
 -- name: CreateUser :one
 INSERT INTO users (telegram_id, first_name)
 VALUES ($1, $2)
