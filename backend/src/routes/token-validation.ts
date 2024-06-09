@@ -5,15 +5,16 @@ import {
   deleteTempTokenByTelegramID,
   getTempTokeByTelegramID,
 } from '../repository/sessions/sessions-queries_sql';
-import { getUserByTelegramID } from '../repository/users/users-queries_sql';
+import { GetUserByTelegramIDRow, getUserByTelegramID } from '../repository/users/users-queries_sql';
 import { client } from '../utils/db';
+import { compareHash } from '../utils/token';
 
 const SALT = process.env.SALT || 'somesalt';
 const PEPPER = process.env.PEPPER || 'somepepper';
 
-export async function validateUserAndToken(telegramID: string, token: string) {
+export async function validateUserAndToken(telegramID: string, token: string): Promise<GetUserByTelegramIDRow | null> {
   const user = await getUserByTelegramID(client, { telegramId: telegramID });
-  if (user === null || user.token !== token) {
+  if (user === null || !compareHash(token, user.token)) {
     await deleteSessionAndTempToken(telegramID);
     return null;
   }

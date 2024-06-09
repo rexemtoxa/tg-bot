@@ -11,3 +11,22 @@ export function generateToken(): { token: string; hash: string } {
     .digest('hex');
   return { token, hash };
 }
+
+export function hashToken(token: string): string {
+  return crypto
+    .createHmac('sha256', PEPPER)
+    .update(token + SALT)
+    .digest('hex');
+}
+
+export function compareHash(input: string, hash: string | null): boolean {
+  if (!hash) {
+    return false;
+  }
+  const inputHash = crypto
+    .createHmac('sha256', PEPPER)
+    .update(input + SALT)
+    .digest('hex');
+  console.log('compareHash', inputHash, hash, input);
+  return inputHash === hash;
+}

@@ -36,7 +36,7 @@
     });
 
     if (response.status === 409) {
-      navigate("/login");
+      navigate("/profile");
     } else if (response.ok) {
       showTokenBox = true;
       errorMessage = "";
@@ -73,4 +73,4 @@
   </div>
 {/if}
 
-<button on:click={() => navigate("/login")}>Login</button>
+<button on:click={() => navigate("/profile")}>Login</button>
