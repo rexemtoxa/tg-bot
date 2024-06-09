@@ -2,15 +2,32 @@
   import { v4 as uuidv4 } from "uuid";
   import { extractTelegramIdFromQuery } from "../utils";
   import { onMount } from "svelte";
+  import { navigate } from "svelte-routing";
 
   let telegramID = "";
   let password = "";
   let token = "";
   let showTokenBox = false;
+  let showLoginButton = false;
 
-  onMount(() => {
+  onMount(async () => {
     const params = extractTelegramIdFromQuery();
     telegramID = params.telegramId;
+    try {
+      const response = await fetch("/api/user", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.ok) {
+        navigate("/profile");
+      } else {
+        showLoginButton = true;
+      }
+    } catch (error) {
+      console.log("User not authenticated");
+      showLoginButton = true;
+    }
   });
 
   const signUp = async () => {
@@ -24,6 +41,10 @@
     if (response.ok) {
       showTokenBox = true;
     }
+  };
+
+  const goToLogin = () => {
+    navigate("/profile");
   };
 </script>
 
@@ -42,6 +63,10 @@
 {#if showTokenBox}
   <div>
     <p>Your token is: {token}</p>
-    <button on:click={() => (showTokenBox = false)}>OK</button>
+    <button on:click={() => navigate("/profile")}>OK</button>
   </div>
+{/if}
+
+{#if showLoginButton}
+  <button on:click={goToLogin}>Login</button>
 {/if}

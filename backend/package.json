@@ -8,6 +8,7 @@
     "bot-start": "node dist/src/bot/index.js",
     "migrate-up-ci": "dbmate -d /app/db/migrations -e DATABASE_URL up",
     "lint-check": "eslint . --ext .ts",
+    "lint-fix": "eslint . --ext .ts --fix",
     "test": "jest"
   },
   "author": "",

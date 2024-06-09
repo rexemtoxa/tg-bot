@@ -90,6 +90,17 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: verification_codes; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.verification_codes (
+    telegram_id text NOT NULL,
+    code text NOT NULL,
+    expires_at timestamp without time zone DEFAULT (now() + '1 day'::interval) NOT NULL
+);
+
+
+--
 -- Name: sessions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -152,6 +163,14 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: verification_codes verification_codes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.verification_codes
+    ADD CONSTRAINT verification_codes_pkey PRIMARY KEY (telegram_id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -163,4 +182,5 @@ ALTER TABLE ONLY public.users
 INSERT INTO public.schema_migrations (version) VALUES
     ('20240608101630'),
     ('20240608101929'),
-    ('20240608122917');
+    ('20240608122917'),
+    ('20240609142407');
