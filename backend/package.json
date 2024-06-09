@@ -6,7 +6,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "bot-start": "node dist/bot/index.js",
-    "migrate-up-ci": "pwd && ls -lah && dbmate -d /app/db/migrations -e DATABASE_URL up"
+    "migrate-up-ci": "pwd && ls -lah && dbmate -d /app/db/migrations -e DATABASE_URL up",
+    "lint-check": "eslint . --ext .ts"
   },
   "author": "",
   "license": "ISC",
@@ -29,6 +30,7 @@
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.5",
     "@types/pg": "^8.11.6",
+    "@typescript-eslint/eslint-plugin": "^7.12.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",

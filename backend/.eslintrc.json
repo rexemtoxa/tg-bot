@@ -13,10 +13,10 @@
         "@typescript-eslint/no-explicit-any": "warn",
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
-        "@ngrx/prefer-concat-latest-from": ["warn", { "strict": false }],
         "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/consistent-type-definitions": "error",
         "@typescript-eslint/dot-notation": "off",
+        "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/explicit-member-accessibility": [
           "off",
           {
@@ -78,8 +78,7 @@
     },
     {
       "files": ["*.html"],
-      "extends": ["plugin:prettier/recommended"],
+      "extends": ["plugin:prettier/recommended"]
     }
-  ],
-  "extends": ["plugin:storybook/recommended"]
+  ]
 }
