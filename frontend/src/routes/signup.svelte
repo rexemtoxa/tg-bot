@@ -3,6 +3,7 @@
   import { extractTelegramIdFromQuery } from "../utils";
   import { onMount } from "svelte";
   import { navigate } from "svelte-routing";
+  import "../styles.css";
 
   let telegramID = "";
   let password = "";
@@ -51,26 +52,40 @@
   };
 </script>
 
-<form on:submit|preventDefault={signUp}>
-  <label>
-    Telegram ID:
-    <input type="text" bind:value={telegramID} required />
-  </label>
-  <label>
-    Password:
-    <input type="password" bind:value={password} required />
-  </label>
-  <button type="submit">Sign Up</button>
-  {#if errorMessage}
-    <p>{@html errorMessage}</p>
-  {/if}
-</form>
+<main>
+  <div class="form-container">
+    <form on:submit|preventDefault={signUp}>
+      <input
+        type="text"
+        bind:value={telegramID}
+        required
+        placeholder="Telegram ID"
+      />
+      <input
+        type="password"
+        bind:value={password}
+        required
+        placeholder="Password"
+      />
+      <div class="buttons-container">
+        <button type="submit">Sign Up</button>
+        {#if errorMessage}
+          <p class="error">{@html errorMessage}</p>
+        {/if}
+      </div>
+    </form>
 
-{#if showTokenBox}
-  <div>
-    <p>Your token is: {token}</p>
-    <button on:click={() => navigate("/profile")}>OK</button>
+    {#if showTokenBox}
+      <div class="token-box">
+        <p>Your token is: {token}</p>
+        <button on:click={() => navigate("/profile")}>OK</button>
+      </div>
+    {/if}
+
+    <div class="buttons-container">
+      <button class="link-button" on:click={() => navigate("/profile")}
+        >Login</button
+      >
+    </div>
   </div>
-{/if}
-
-<button on:click={() => navigate("/profile")}>Login</button>
+</main>

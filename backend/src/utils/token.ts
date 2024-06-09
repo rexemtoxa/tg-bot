@@ -27,6 +27,5 @@ export function compareHash(input: string, hash: string | null): boolean {
     .createHmac('sha256', PEPPER)
     .update(input + SALT)
     .digest('hex');
-  console.log('compareHash', inputHash, hash, input);
   return inputHash === hash;
 }

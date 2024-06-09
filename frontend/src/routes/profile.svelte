@@ -1,6 +1,7 @@
 <script lang="ts">
   import { navigate } from "svelte-routing";
   import { onMount } from "svelte";
+  import "../styles.css";
 
   let telegramID = "";
   let password = "";
@@ -29,7 +30,7 @@
     } catch (error) {
       showLoginBox = true;
     } finally {
-      loading = false; // Set loading to false once the check is complete
+      loading = false;
     }
   });
 
@@ -104,43 +105,58 @@
   {#if loading}
     <p>Loading...</p>
   {:else}
-    {#if showLoginBox}
-      <form on:submit|preventDefault={login}>
-        <label>
-          Telegram ID:
-          <input type="text" bind:value={telegramID} required />
-        </label>
-        <label>
-          Password:
-          <input type="password" bind:value={password} required />
-        </label>
-        <button type="submit">Log In</button>
-        {#if errorMessage}
-          <p>{errorMessage}</p>
-        {/if}
-      </form>
-    {/if}
+    <div class="form-container">
+      {#if showLoginBox}
+        <form on:submit|preventDefault={login}>
+          <h2>Log In</h2>
+          <input
+            type="text"
+            bind:value={telegramID}
+            required
+            placeholder="Telegram ID"
+          />
+          <input
+            type="password"
+            bind:value={password}
+            required
+            placeholder="Password"
+          />
+          <div class="buttons-container">
+            <button type="submit">Log In</button>
+            {#if errorMessage}
+              <p>{errorMessage}</p>
+            {/if}
+          </div>
+        </form>
+      {/if}
 
-    {#if showTokenBox}
-      <div>
-        <label>
-          Token:
-          <input type="text" bind:value={token} required />
-        </label>
-        <button on:click={verifyToken}>Verify Token</button>
-        {#if errorMessage}
-          <p>{errorMessage}</p>
-        {/if}
-      </div>
-    {/if}
+      {#if showTokenBox}
+        <div>
+          <h2>Verify Token</h2>
+          <input
+            type="text"
+            bind:value={token}
+            required
+            placeholder="Token"
+            class="full-width-input"
+          />
+          <div class="buttons-container">
+            <button on:click={verifyToken}>Verify Token</button>
+            {#if errorMessage}
+              <p>{errorMessage}</p>
+            {/if}
+          </div>
+        </div>
+      {/if}
 
-    {#if userProfile}
-      <div>
-        <h2>Profile</h2>
-        <p>Telegram ID: {userProfile.telegramID}</p>
-        <p>Created At: {userProfile.createdAt}</p>
-        <button on:click={logout}>Log Out</button>
-      </div>
-    {/if}
+      {#if userProfile}
+        <div>
+          <h2>Profile</h2>
+          <p>Telegram ID: {userProfile.telegramID}</p>
+          <p>Created At: {userProfile.createdAt}</p>
+          <button on:click={logout}>Log Out</button>
+        </div>
+      {/if}
+    </div>
   {/if}
 </main>
