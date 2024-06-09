@@ -25,4 +25,4 @@ RUN npm ci --only=production
 ENV PATH_TO_STATIC=/app/public
 EXPOSE 3000
 
-CMD ["node", "/app/dist/index.js"]
+CMD ["node", "/app/dist/src/index.js"]
