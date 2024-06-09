@@ -17,6 +17,7 @@ router.get('/user', auth, async (req, res) => {
       createdAt: user.createdAt,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Database error' });
   }
 });

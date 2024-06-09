@@ -8,7 +8,7 @@
   let password = "";
   let token = "";
   let showTokenBox = false;
-  let showLoginButton = false;
+  let errorMessage = "";
 
   onMount(async () => {
     const params = extractTelegramIdFromQuery();
@@ -21,12 +21,9 @@
 
       if (response.ok) {
         navigate("/profile");
-      } else {
-        showLoginButton = true;
       }
     } catch (error) {
       console.log("User not authenticated");
-      showLoginButton = true;
     }
   });
 
@@ -38,13 +35,19 @@
       body: JSON.stringify({ telegramID, password, token }),
     });
 
-    if (response.ok) {
+    if (response.status === 409) {
+      navigate("/login");
+    } else if (response.ok) {
       showTokenBox = true;
+      errorMessage = "";
+    } else {
+      const errorData = await response.json();
+      if (errorData.error.includes("Telegram bot")) {
+        errorMessage = `<p>${errorData.error.replace("Telegram bot @TestAssessmentAntonRehemae_bot", '<a href="https://t.me/TestAssessmentAntonRehemae_bot" target="_blank">Telegram bot</a>')}</p>`;
+      } else {
+        errorMessage = errorData.error;
+      }
     }
-  };
-
-  const goToLogin = () => {
-    navigate("/profile");
   };
 </script>
 
@@ -58,6 +61,9 @@
     <input type="password" bind:value={password} required />
   </label>
   <button type="submit">Sign Up</button>
+  {#if errorMessage}
+    <p>{@html errorMessage}</p>
+  {/if}
 </form>
 
 {#if showTokenBox}
@@ -67,6 +73,4 @@
   </div>
 {/if}
 
-{#if showLoginButton}
-  <button on:click={goToLogin}>Login</button>
-{/if}
+<button on:click={() => navigate("/login")}>Login</button>

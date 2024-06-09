@@ -1,16 +1,26 @@
 import express from 'express';
-import { auth } from '../middleware/auth';
-import { deleteSessionByTelegramID, saveTempToken } from '../repository/sessions/sessions-queries_sql';
+import crypto from 'crypto';
 import { getUserByTelegramID, saveUserPassword, updateUserToken } from '../repository/users/users-queries_sql';
+import { saveTempToken, getTempTokeByTelegramID, deleteTempTokenByTelegramID, deleteSessionByTelegramID, createSession } from '../repository/sessions/sessions-queries_sql';
 import { client } from '../utils/db';
 import { generateToken } from '../utils/token';
-import { generateSession, validateTempToken, validateUserAndToken } from './token-validation';
+import { auth } from '../middleware/auth';
+import { validateUserAndToken, validateTempToken, generateSession } from './token-validation';
 
 const router = express.Router();
 
 router.post('/signup', async (req, res) => {
   const { telegramID, password, token } = req.body;
   try {
+    const user = await getUserByTelegramID(client, { telegramId: telegramID });
+    if (user && user.password) {
+      // User exists and has a password, send a custom status and message
+      return res.status(409).json({ redirectTo: '/login' });
+    } else if (!user) {
+      // User does not exist, ask them to open the Telegram bot
+      return res.status(400).json({ error: 'User does not exist. Please open the Telegram bot @TestAssessmentAntonRehemae_bot first.' });
+    }
+
     await saveUserPassword(client, { telegramId: telegramID, password: password });
     await updateUserToken(client, { telegramId: telegramID, token: token });
     res.status(200).json({ success: true });
