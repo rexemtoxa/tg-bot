@@ -34,7 +34,7 @@ function generateToken(): { token: string; hash: string } {
 }
 
 export class Context {
-  constructor(public telegramID: string) {}
+  constructor(public telegramID: string) { }
 }
 
 declare global {
