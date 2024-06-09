@@ -1,6 +1,6 @@
 import postgres from 'postgres';
-import { createUser, CreateUserRow, getUserByTelegramID, GetUserByTelegramIDRow } from '../users/users-queries_sql';
 import { DataBaseDeps } from '../../bot/launch-bot';
+import { createUser, CreateUserRow, getUserByTelegramID, GetUserByTelegramIDRow } from '../users/users-queries_sql';
 
 export const getBotDeps = (sql: postgres.Sql<{}>): DataBaseDeps => {
   return {

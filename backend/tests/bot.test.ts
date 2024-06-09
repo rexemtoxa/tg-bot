@@ -1,4 +1,4 @@
-import { BotDeps, DataBaseDeps, launchBot } from "../src/bot/launch-bot";
+import { BotDeps, DataBaseDeps, launchBot } from '../src/bot/launch-bot';
 
 const mockDbDeps: jest.Mocked<DataBaseDeps> = {
   createUser: jest.fn().mockResolvedValue({}),
@@ -17,7 +17,6 @@ const mockBotDeps: jest.Mocked<BotDeps> = {
 
 const admins = ['533398165'];
 const BASE_URL = 'http://example.com';
-
 
 beforeAll(() => {
   launchBot(mockDbDeps, mockBotDeps, admins, BASE_URL);
