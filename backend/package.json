@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/src/index.js",
+    "start-dev": "ts-node src/index.ts",
     "bot-start": "node dist/src/bot/index.js",
     "migrate-up-ci": "dbmate -d /app/db/migrations -e DATABASE_URL up",
     "lint-check": "eslint . --ext .ts",
