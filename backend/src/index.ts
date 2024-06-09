@@ -15,7 +15,7 @@ const client = postgres({
   database: process.env.DB_DATABASE,
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  ssl: false
+  ssl: 'require'
 });
 
 const SALT = process.env.SALT || 'somesalt';
