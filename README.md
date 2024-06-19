@@ -103,3 +103,5 @@ For additional commands, please check the `scripts` section in the `package.json
 - Write a few integration tests using Playwright or a similar tool and include these steps in the CI pipeline.
 - Move handling of temp tokens/sessions to Redis.
 - Improve logging.
+
+PS. CI/CD and deployed app were destroyed at 19.05
